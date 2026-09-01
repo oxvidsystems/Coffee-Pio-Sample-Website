@@ -110,9 +110,26 @@ Then open: **http://localhost:5000**
 
 ## 👨‍💻 Developed By
 
-**Oxvid Systems**
-- 📧 oxvidsystems@gmail.com
-- 🐙 [github.com/oxvidsystems](https://github.com/oxvidsystems)
+### **Oxvid Systems**
+
+> 🚀 *7+ Years of Experience in Web Development, Automation & AI Agents*
+
+We specialize in building **premium websites**, **intelligent automation systems**, and **AI-powered agents** for businesses of all sizes — from startups to enterprises.
+
+#### 🛠️ What We Do
+- 🌐 **Web Development** — Custom, modern & responsive websites
+- 🤖 **Automation** — Business process automation & workflow optimization
+- 🧠 **AI Agents** — Intelligent agents & chatbots for your business
+
+#### 📬 Contact Us
+| | |
+|---|---|
+| 📧 **Email** | [oxvidsystems@gmail.com](mailto:oxvidsystems@gmail.com) |
+| 📱 **WhatsApp** | [+92-322-1690030](https://wa.me/923221690030) |
+| 🐙 **GitHub** | [github.com/oxvidsystems](https://github.com/oxvidsystems) |
+| 🌐 **Portfolio** | *Coming Soon...* |
+
+> 💬 **Need a website or automation solution? Reach out — we'd love to help!**
 
 ---
 
