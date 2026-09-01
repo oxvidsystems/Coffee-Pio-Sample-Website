@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0B0A09">
+<meta name="description" content="Coffeepio — small-batch coffee, roasted in ritual. Black coffee, cappuccino, cold coffee, espresso and latte, crafted fresh.">
+<title>Coffeepio — Roasted in Ritual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Cormorant+Garamond:wght@500;600;700;800&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --obsidian:     #0B0A09;
+    --porcelain:    #F4EFE6;
+    --gold:         #C8A45C;
+    --gold-bright:  #E8C988;
+    --smoke:        rgba(244,239,230,0.58);
+    --ease:         cubic-bezier(.16,.84,.44,1);
+    --roast:        #1C140E;
+    --roast-2:      #150F0A;
+    --crema:        #D9B27C;
+    --line:         rgba(200,164,92,0.22);
+    --glass:        rgba(244,239,230,0.04);
+    --glass-strong: rgba(20,16,12,0.55);
+    --gold-glow:    rgba(200,164,92,0.06);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ background:var(--obsidian); color:var(--porcelain); overflow-x:hidden; width:100%; }
+  body{ font-family:'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+  ::selection{ background:var(--gold); color:var(--obsidian); }
+  a{ color:inherit; }
+
+  /* ===== FIXED BACKGROUND VIDEO ===== */
+  .video-wrapper{ position:fixed; inset:0; width:100%; height:100vh; height:100dvh; z-index:0; background:var(--obsidian); overflow:hidden; }
+  #bg-video{ width:100%; height:100%; object-fit:cover; object-position:center center; display:block; }
+  .video-overlay{
+    position:absolute; inset:0;
+    background:linear-gradient(to bottom,rgba(11,10,9,0.68) 0%,rgba(11,10,9,0.12) 26%,rgba(11,10,9,0.12) 68%,rgba(11,10,9,0.74) 100%);
+    pointer-events:none;
+  }
+
+  /* Video progress / social status overlay */
+  .video-status{
+    position:absolute; left:50%; transform:translateX(-50%);
+    bottom:2.8rem; z-index:12; display:flex; align-items:center; gap:1rem;
+    padding:0.6rem 0.8rem; border-radius:999px; background:linear-gradient(90deg, rgba(11,10,9,0.48), rgba(11,10,9,0.18));
+    border:1px solid rgba(244,239,230,0.06); backdrop-filter:blur(8px); pointer-events:auto;
+  }
+  .video-progress{ display:flex; align-items:center; gap:0.6rem; color:var(--porcelain); font-weight:600; font-size:0.78rem; letter-spacing:0.04em; }
+  .video-progress-bar{ width:130px; height:4px; background:rgba(244,239,230,0.04); border-radius:999px; overflow:hidden; }
+  .video-progress-fill{ width:0%; height:100%; background:linear-gradient(90deg,var(--gold-bright),var(--gold)); border-radius:999px; box-shadow:0 6px 18px rgba(200,164,92,0.10); transition:width .25s linear; }
+  .video-status-social{ display:flex; gap:0.45rem; align-items:center; }
+  .video-status-social a{ width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%; color:var(--porcelain); text-decoration:none; border:1px solid rgba(244,239,230,0.06); background:transparent; transition:transform .2s var(--ease), background .2s var(--ease), color .2s var(--ease); }
+  .video-status-social a:hover{ transform:scale(1.06); color:var(--gold-bright); background:rgba(200,164,92,0.06); }
+
+  /* subtle floating used after entrance */
+  @keyframes floatSubtle{ 0%{ transform:translateY(0px); } 50%{ transform:translateY(-8px); } 100%{ transform:translateY(0px); } }
+
+  /* ===== LOADER ===== */
+  .loader{ position:fixed; inset:0; z-index:999; background:var(--obsidian); display:flex; align-items:center; justify-content:center; }
+  .loader-content{ display:flex; flex-direction:column; align-items:center; gap:1.1rem; max-width:280px; width:100%; padding:0 1.4rem; }
+  .loader-mark{ position:relative; display:inline-flex; align-items:center; justify-content:center; width:108px; height:108px; min-width:108px; min-height:108px; border-radius:20px; background:transparent; border:1px solid rgba(244,239,230,0.18); box-shadow:0 18px 42px rgba(0,0,0,0.22); overflow:hidden; }
+  .loader-mark svg{ width:68px; height:68px; display:block; }
+  .loader-mark .steam path{ fill:none; stroke:var(--gold-bright); stroke-width:1.8; stroke-linecap:round; opacity:0.95; }
+  .loader-mark .steam path:nth-child(1){ animation:steamRise 2.8s ease-in-out infinite; animation-delay:0s; }
+  .loader-mark .steam path:nth-child(2){ animation:steamRise 2.8s ease-in-out infinite; animation-delay:-0.8s; }
+  .loader-mark .steam path:nth-child(3){ animation:steamRise 2.8s ease-in-out infinite; animation-delay:-1.5s; }
+  .loader-brand{ display:flex; flex-direction:column; align-items:center; gap:0.1rem; }
+  .loader-title{ font-family:'Great Vibes',cursive; font-size:1.4rem; letter-spacing:0.02em; font-weight:400; color:var(--porcelain); text-transform:none; text-shadow:0 3px 12px rgba(0,0,0,0.16); }
+  .loader-subtitle{ font-family:'Inter',sans-serif; font-size:0.76rem; letter-spacing:0.18em; color:rgba(244,239,230,0.8); text-transform:uppercase; }
+  .loader-bar{ width:170px; height:4px; background:rgba(244,239,230,0.1); border-radius:999px; overflow:hidden; position:relative; }
+  .loader-bar-fill{ position:absolute; top:0; left:0; width:0%; height:100%; background:linear-gradient(90deg,var(--gold-bright),var(--gold)); border-radius:999px; transition:width 0.2s ease; }
+  @keyframes loaderFill{ 0%{ width:0%; } 100%{ width:100%; } }
+
+  /* ===== HEADER ===== */
+  .site-header{ position:fixed; top:0; left:0; width:100%; padding:2rem 6vw; z-index:20; pointer-events:none; }
+  .logo{ font-size:0.82rem; letter-spacing:0.35em; font-weight:500; color:var(--porcelain); text-shadow:0 2px 14px rgba(0,0,0,0.5); }
+  .brand{ display:inline-flex; align-items:center; gap:0.08rem; pointer-events:auto; text-decoration:none; }
+  .brand-mark{ position:relative; width:78px; height:78px; min-width:78px; min-height:78px; flex-shrink:0; overflow:visible; transform:translateY(-5px); }
+  .brand-mark svg{ width:100%; height:100%; display:block; }
+  .brand-mark .steam path{ fill:none; stroke:var(--gold-bright); stroke-width:1.7; stroke-linecap:round; opacity:0.95; }
+  .brand-mark .steam path:nth-child(1){ animation:steamRise 2.8s ease-in-out infinite; animation-delay:0s; }
+  .brand-mark .steam path:nth-child(2){ animation:steamRise 2.8s ease-in-out infinite; animation-delay:-1s; }
+  .brand-mark .steam path:nth-child(3){ animation:steamRise 2.8s ease-in-out infinite; animation-delay:-1.8s; }
+  @keyframes steamRise{ 0%{ opacity:0; transform:translateY(5px) scaleX(0.95); } 40%{ opacity:1; transform:translateY(-6px) scaleX(1.03); } 100%{ opacity:0; transform:translateY(-22px) scaleX(1.08); } }
+  .brand-word{ font-family:'Great Vibes',cursive; font-size:1.55rem; letter-spacing:0.02em; font-weight:400; color:var(--porcelain); text-transform:none; line-height:1; text-shadow:0 2px 10px rgba(0,0,0,0.16); }
+  .brand-word .accent-dot{ color:var(--gold); letter-spacing:0.08em; }
+
+  /* ===== LEFT NAV — vertical stack with icon + label below ===== */
+  .side-nav{
+    position:fixed;
+    top:50%;
+    left:2.2vw;
+    transform:translateY(-50%);
+    z-index:30;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    padding:1.6rem 0.5rem;
+    border-radius:999px;
+    background:rgba(11,10,9,0.55);
+    border:1px solid var(--line);
+    backdrop-filter:blur(14px) saturate(140%);
+    -webkit-backdrop-filter:blur(14px) saturate(140%);
+    box-shadow:0 12px 40px rgba(0,0,0,0.35);
+  }
+
+  .side-nav-link{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:0.6rem;
+    padding:0.5rem 0.48rem;
+    text-decoration:none;
+    color:var(--smoke);
+    transition:color .3s var(--ease);
+    border-radius:6px;
+    min-width:38px;
+  }
+
+  .side-nav-icon{
+    width:16px;
+    height:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform .3s var(--ease);
+  }
+  .side-nav-icon svg{
+    width:100%;
+    height:100%;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:1.4;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+
+  .side-nav-text{
+    font-size:0.55rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-weight:600;
+    white-space:nowrap;
+    opacity:0.7;
+    transition:opacity .3s var(--ease), color .3s var(--ease);
+  }
+
+  /* Gold line indicator LEFT side of active item */
+  .side-nav-link::before{
+    content:'';
+    position:absolute;
+    left:0; top:50%;
+    transform:translateY(-50%);
+    width:2px; height:0%;
+    background:var(--gold);
+    border-radius:2px;
+    transition:height .3s var(--ease);
+  }
+  .side-nav-link:hover,
+  .side-nav-link.active,
+  .side-nav-link:focus-visible{
+    color:var(--gold-bright);
+    background:rgba(200,164,92,0.06);
+  }
+  .side-nav-link:hover .side-nav-text,
+  .side-nav-link.active .side-nav-text{
+    opacity:1;
+    color:var(--gold-bright);
+  }
+  .side-nav-link:hover::before,
+  .side-nav-link.active::before{
+    height:55%;
+  }
+  .side-nav-link:hover .side-nav-icon{
+    transform:scale(1.12);
+  }
+  .side-nav-link:focus-visible{ outline:none; }
+
+  /* ===== RIGHT-SIDE PANEL — Cart pill + Social icons ===== */
+  .right-panel{
+    position:fixed;
+    top:50%;
+    right:2.8vw;
+    transform:translateY(-50%);
+    z-index:30;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0.7rem;
+  }
+
+  /* Cart button */
+  .side-cart{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0.3rem;
+    padding:0.85rem 0.95rem;
+    border-radius:999px;
+    background:var(--gold);
+    color:var(--obsidian);
+    border:none;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:0.62rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-weight:700;
+    box-shadow:0 8px 24px rgba(200,164,92,0.35);
+    transition:transform .3s var(--ease), box-shadow .3s var(--ease), background .3s var(--ease);
+    min-width:50px;
+  }
+  .side-cart:hover{
+    background:var(--gold-bright);
+    box-shadow:0 12px 30px rgba(200,164,92,0.5);
+    transform:scale(1.06);
+  }
+  .side-cart svg{ width:18px; height:18px; stroke:var(--obsidian); fill:none; stroke-width:1.6; }
+  .cart-count{
+    background:var(--obsidian);
+    color:var(--gold-bright);
+    border-radius:999px;
+    min-width:20px;
+    height:20px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:0.62rem;
+    font-weight:700;
+    padding:0 4px;
+  }
+
+  /* Social icons column */
+  .side-social{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0;
+    padding:0.6rem 0.4rem;
+    border-radius:999px;
+    background:rgba(11,10,9,0.55);
+    border:1px solid var(--line);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+  }
+  .side-social-link{
+    width:38px;
+    height:38px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--smoke);
+    text-decoration:none;
+    border-radius:50%;
+    transition:color .3s var(--ease), background .3s var(--ease), transform .3s var(--ease);
+  }
+  .side-social-link svg{ width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.5; }
+  .side-social-link:hover{
+    color:var(--gold-bright);
+    background:rgba(200,164,92,0.1);
+    transform:scale(1.12);
+  }
+
+  /* ===== POUR GAUGE — fixed LEFT, horizontally beside the nav pill ===== */
+  .pour-gauge{
+    position:fixed;
+    top:50%;
+    left:calc(2.2vw + 66px);
+    transform:translateY(-50%);
+    z-index:29;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0.5rem;
+    pointer-events:none;
+  }
+  .pour-gauge-track{ position:relative; width:2px; height:18vh; background:rgba(244,239,230,0.15); border-radius:2px; }
+  .pour-gauge-fill{ position:absolute; bottom:0; left:0; width:100%; height:0%; background:linear-gradient(to top,var(--gold),var(--gold-bright)); box-shadow:0 0 10px rgba(200,164,92,0.6); border-radius:2px; }
+  .pour-gauge-label{ font-size:0.52rem; letter-spacing:0.15em; color:var(--smoke); font-variant-numeric:tabular-nums; }
+  @media (max-width:900px){ .pour-gauge{ display:none; } }
+
+  /* ===== CONTENT ===== */
+  .content{ position:relative; z-index:1; }
+  .panel{ min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; justify-content:center; padding:0 6vw; position:relative; }
+  .hero{ align-items:center; text-align:center; }
+  .align-left{ align-items:flex-start; text-align:left; }
+  .align-right{ align-items:flex-end; text-align:right; }
+  .final{ align-items:center; text-align:center; }
+
+  .eyebrow{
+    display:block;
+    font-size:0.78rem;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    font-weight:500;
+    color:var(--gold);
+    margin-bottom:1.4rem;
+  }
+
+  /* ===== HEADINGS — bolder, white+gold split ===== */
+  h1{
+    font-size:clamp(2.8rem,9vw,7rem);
+    font-weight:700;
+    line-height:1.04;
+    letter-spacing:-0.02em;
+    color:#FFFFFF;
+    margin-bottom:1.6rem;
+  }
+  h1 em, h1 span.gold{ color:var(--gold-bright); font-style:normal; }
+
+  h2{
+    font-size:clamp(2.1rem,5.6vw,4rem);
+    font-weight:700;
+    line-height:1.08;
+    letter-spacing:-0.015em;
+    color:#FFFFFF;
+    margin-bottom:1.4rem;
+  }
+  /* First word(s) white, rest gold — handled via .heading-split spans */
+  .heading-split .w{ color:#FFFFFF; }
+  .heading-split .g{ color:var(--gold-bright); }
+
+  h3{ font-weight:600; color:#FFFFFF; }
+
+  .sub{ max-width:520px; margin:0 auto; font-size:clamp(1rem,1.4vw,1.2rem); font-weight:300; line-height:1.7; color:var(--smoke); }
+  .text-block{ max-width:520px; padding:2.6rem 3rem; background:linear-gradient(135deg,rgba(11,10,9,0.55),rgba(11,10,9,0.22)); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-left:1px solid rgba(200,164,92,0.35); }
+  .align-right .text-block{ border-left:none; border-right:1px solid rgba(200,164,92,0.35); }
+  .text-block p{ font-size:clamp(1rem,1.3vw,1.12rem); font-weight:300; line-height:1.75; color:var(--smoke); }
+  .final p{ font-size:clamp(1rem,1.3vw,1.12rem); font-weight:300; color:var(--smoke); margin-bottom:2.4rem; }
+
+  .cta{ display:inline-block; padding:1.05rem 2.7rem; border:1px solid var(--gold); border-radius:999px; color:var(--porcelain); text-decoration:none; font-size:0.8rem; letter-spacing:0.2em; text-transform:uppercase; font-weight:500; transition:background .4s var(--ease),color .4s var(--ease),box-shadow .4s var(--ease); }
+  .cta:hover{ background:var(--gold); color:var(--obsidian); box-shadow:0 0 36px rgba(200,164,92,0.45); }
+  .cta:focus-visible{ outline:2px solid var(--gold-bright); outline-offset:4px; }
+
+  .scroll-cue{ position:absolute; bottom:3rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:0.7rem; font-size:0.65rem; letter-spacing:0.3em; color:var(--smoke); }
+  .scroll-cue-line{ width:1px; height:32px; background:linear-gradient(to bottom,var(--gold),transparent); animation:scrollPulse 2s ease-in-out infinite; }
+  @keyframes scrollPulse{ 0%,100%{ opacity:0.25; transform:scaleY(0.6); } 50%{ opacity:1; transform:scaleY(1); } }
+  .reveal{ opacity:0; transform:translateY(60px); transition: none; }
+  noscript .reveal, html.no-js .reveal{ opacity:1; transform:none; }
+
+  /* ===== GROUND — solid base below video ===== */
+  .ground{ position:relative; z-index:2; background:var(--obsidian); overflow:hidden; }
+  .ground::before{ content:''; position:absolute; top:0; left:0; right:0; height:18vh; background:linear-gradient(to bottom,var(--obsidian),rgba(11,10,9,0)); pointer-events:none; z-index:5; }
+
+  /* Light golden gradient on SECTION HEADINGS background — subtle accent strip */
+  .ground-section{ position:relative; padding:7.5rem 6vw; }
+  .ground-section + .ground-section{ border-top:1px solid var(--line); }
+  .ground-section::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:260px;
+    background:linear-gradient(to bottom, rgba(200,164,92,0.045) 0%, transparent 100%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .section-head{ max-width:640px; margin:0 auto 4.2rem; text-align:center; position:relative; z-index:1; }
+  .section-head .eyebrow{ margin-bottom:1rem; }
+  .section-head h2{ margin-bottom:1.1rem; }
+  .section-head p{ font-size:clamp(1rem,1.3vw,1.12rem); font-weight:300; line-height:1.75; color:var(--smoke); }
+
+  /* Section heading glow highlight */
+  .section-head h2{
+    position:relative;
+    display:inline-block;
+  }
+  .section-head h2::before{
+    content:'';
+    position:absolute;
+    inset:-14px -24px;
+    background:radial-gradient(ellipse at center, rgba(200,164,92,0.09) 0%, transparent 70%);
+    border-radius:16px;
+    z-index:-1;
+  }
+
+  /* Bean field decoration */
+  .bean-field{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+  .bean-field svg{ position:absolute; opacity:0.5; filter:drop-shadow(0 6px 10px rgba(0,0,0,0.4)); }
+  .float-a{ animation:floatDrift 13s var(--ease) infinite; }
+  .float-b{ animation:floatDrift 17s var(--ease) infinite reverse; }
+  .float-c{ animation:floatDrift 21s var(--ease) infinite; }
+  @keyframes floatDrift{ 0%{ transform:translate(0,0) rotate(0deg); } 50%{ transform:translate(14px,-22px) rotate(12deg); } 100%{ transform:translate(0,0) rotate(0deg); } }
+
+  /* ===== BENEFITS ===== */
+  .benefits-grid{ position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,1fr); gap:2.2rem; max-width:1180px; margin:0 auto; }
+  .benefit-card{ padding:2.6rem 2rem 2.2rem; background:linear-gradient(160deg,rgba(244,239,230,0.045),rgba(244,239,230,0.01)); border:1px solid var(--line); border-radius:4px; text-align:left; transition:transform .5s var(--ease),border-color .5s var(--ease),background .5s var(--ease); }
+  .benefit-card:hover{ transform:translateY(-6px); border-color:rgba(200,164,92,0.5); background:linear-gradient(160deg,rgba(200,164,92,0.07),rgba(244,239,230,0.01)); }
+  .benefit-icon{ width:52px; height:52px; margin-bottom:1.6rem; }
+  .benefit-icon svg{ width:100%; height:100%; }
+  .benefit-card h3{ font-size:1.18rem; font-weight:600; letter-spacing:-0.005em; color:#FFFFFF; margin-bottom:0.75rem; }
+  .benefit-card p{ font-size:0.92rem; font-weight:300; line-height:1.7; color:var(--smoke); }
+
+  .organic-strip{ position:relative; z-index:1; display:flex; align-items:center; justify-content:center; gap:2.6rem; margin-top:4.4rem; opacity:0.85; }
+  .organic-strip svg{ width:38px; height:38px; }
+  .organic-strip .divider-line{ flex:1; max-width:160px; height:1px; background:linear-gradient(to right,transparent,var(--line),transparent); }
+
+  /* ===== PRODUCTS ===== */
+  .products-grid{ position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,1fr); gap:2.4rem; max-width:1240px; margin:0 auto; }
+
+  /* Page-load entrance states — JS will animate these in */
+  .product-card.from-left  { opacity:0; transform:translateX(-60px) scale(0.96); }
+  .product-card.from-right { opacity:0; transform:translateX(60px)  scale(0.96); }
+  .product-card.from-bottom{ opacity:0; transform:translateY(50px)   scale(0.97); }
+
+  .product-card{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    background:linear-gradient(170deg,var(--roast) 0%,var(--roast-2) 100%);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    /* rich multi-layer shadow at rest */
+    box-shadow:
+      0  4px  16px rgba(0,0,0,0.45),
+      0 10px  32px rgba(0,0,0,0.35),
+      0  0   18px rgba(200,164,92,0.04);
+    transition:transform .45s var(--ease), box-shadow .45s var(--ease), border-color .45s var(--ease);
+    cursor:pointer;
+  }
+  .product-card:hover{
+    transform:translateY(-12px) scale(1.02);
+    border-color:rgba(200,164,92,0.75);
+    box-shadow:
+      0 20px  50px rgba(0,0,0,0.65),
+      0 35px  70px rgba(0,0,0,0.40),
+      0  0   60px rgba(200,164,92,0.14),
+      inset 0 0 0 1px rgba(200,164,92,0.18);
+  }
+  /* Golden shimmer sweep on hover */
+  .product-card::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:linear-gradient(135deg,rgba(200,164,92,0.10) 0%,transparent 55%);
+    opacity:0;
+    transition:opacity .45s var(--ease);
+    pointer-events:none;
+    border-radius:10px;
+  }
+  .product-card:hover::after{ opacity:1; }
+
+  .product-media{ position:relative; aspect-ratio:4/3; overflow:hidden; background:var(--roast-2); }
+  .product-media img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+    transition:transform .7s var(--ease);
+  }
+  .product-card:hover .product-media img{ transform:scale(1.07); }
+  .product-media-overlay{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to top, rgba(11,10,9,0.65) 0%, transparent 50%);
+    pointer-events:none;
+  }
+
+  .product-badge{ position:absolute; top:1rem; left:1rem; z-index:2; font-size:0.6rem; letter-spacing:0.16em; text-transform:uppercase; font-weight:600; color:var(--obsidian); background:var(--gold-bright); padding:0.4rem 0.75rem; border-radius:999px; }
+  .product-body{ padding:1.7rem 1.6rem 1.9rem; display:flex; flex-direction:column; gap:0.8rem; flex:1; }
+  .product-top{ display:flex; align-items:baseline; justify-content:space-between; gap:0.8rem; }
+  .product-name{ font-size:1.12rem; font-weight:600; color:#FFFFFF; letter-spacing:-0.005em; }
+  .product-price{ font-size:1rem; font-weight:700; color:var(--gold-bright); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .product-desc{ font-size:0.86rem; font-weight:300; line-height:1.65; color:var(--smoke); flex:1; }
+  .product-meta{ display:flex; align-items:center; gap:0.5rem; font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(244,239,230,0.4); }
+  .product-meta svg{ width:13px; height:13px; stroke:var(--gold); fill:none; stroke-width:1.5; }
+
+  .add-cart-btn{
+    margin-top:0.4rem;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:0.6rem;
+    padding:0.85rem 1.2rem;
+    background:transparent;
+    border:1px solid var(--gold);
+    border-radius:999px;
+    color:var(--porcelain);
+    font-family:inherit;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-weight:500;
+    cursor:pointer;
+    transition:background .4s var(--ease),color .4s var(--ease),box-shadow .4s var(--ease),transform .2s var(--ease);
+  }
+  .add-cart-btn svg{ width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:1.6; }
+  .add-cart-btn:hover{ background:var(--gold); color:var(--obsidian); box-shadow:0 0 28px rgba(200,164,92,0.4); transform:scale(1.02); }
+  .add-cart-btn.added{ background:var(--gold-bright); color:var(--obsidian); border-color:var(--gold-bright); }
+
+  /* ===== ABOUT US ===== */
+  .about-wrap{ position:relative; z-index:1; max-width:1180px; margin:0 auto; display:grid; grid-template-columns:1.05fr 0.95fr; gap:4.5rem; align-items:center; }
+
+  /* Entrance animation states */
+  .about-copy.from-left  { opacity:0; transform:translateX(-70px); }
+  .about-visual.from-right{ opacity:0; transform:translateX(70px); }
+  .about-copy .eyebrow{ margin-bottom:1.1rem; }
+  .about-copy h2{ margin-bottom:1.3rem; }
+  .about-copy p{ font-size:clamp(0.98rem,1.2vw,1.08rem); font-weight:300; line-height:1.8; color:var(--smoke); margin-bottom:1.4rem; max-width:540px; }
+  .about-stats{ display:flex; gap:2.6rem; margin-top:2.2rem; }
+  .about-stat-num{ font-size:2.1rem; font-weight:200; color:var(--gold-bright); line-height:1; margin-bottom:0.4rem; }
+  .about-stat-label{ font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--smoke); }
+  .about-visual{ position:relative; aspect-ratio:1/1.05; border-radius:12px; overflow:hidden; border:1px solid var(--line); box-shadow:0 20px 60px rgba(0,0,0,0.4); }
+  .about-visual img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+  /* ===== FOOTER ===== */
+  .site-footer{ position:relative; z-index:2; background:var(--roast-2); border-top:1px solid var(--line); padding:5.5rem 6vw 2.2rem; overflow:hidden; }
+  .footer-glow{ position:absolute; top:-40%; left:50%; transform:translateX(-50%); width:60vw; height:60vw; max-width:800px; max-height:800px; background:radial-gradient(circle,rgba(200,164,92,0.10),transparent 65%); pointer-events:none; }
+  .footer-top{ position:relative; z-index:1; max-width:1180px; margin:0 auto; display:grid; grid-template-columns:1.3fr 0.8fr 0.8fr 1fr; gap:3rem; padding-bottom:3.6rem; border-bottom:1px solid var(--line); }
+  .footer-brand .brand{ margin-bottom:1.1rem; }
+  .footer-brand p{ font-size:0.88rem; font-weight:300; line-height:1.7; color:var(--smoke); max-width:280px; }
+  .footer-col h4{ font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; font-weight:600; color:var(--gold); margin-bottom:1.3rem; }
+  .footer-col ul{ list-style:none; display:flex; flex-direction:column; gap:0.8rem; }
+  .footer-col a{ font-size:0.86rem; color:var(--smoke); text-decoration:none; transition:color .3s var(--ease); }
+  .footer-col a:hover{ color:var(--gold-bright); }
+  .footer-contact-item{ display:flex; align-items:flex-start; gap:0.7rem; font-size:0.86rem; color:var(--smoke); margin-bottom:0.9rem; }
+  .footer-contact-item svg{ width:15px; height:15px; stroke:var(--gold); fill:none; stroke-width:1.5; margin-top:0.15rem; flex-shrink:0; }
+  .footer-social{ display:flex; gap:0.8rem; margin-top:1.4rem; }
+  .footer-social a{ width:36px; height:36px; border:1px solid var(--line); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:border-color .3s var(--ease),background .3s var(--ease); }
+  .footer-social a:hover{ border-color:var(--gold); background:rgba(200,164,92,0.08); }
+  .footer-social svg{ width:15px; height:15px; stroke:var(--porcelain); fill:none; stroke-width:1.4; }
+  .footer-bottom{ position:relative; z-index:1; max-width:1180px; margin:0 auto; padding-top:1.8rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; font-size:0.74rem; color:rgba(244,239,230,0.4); }
+  .footer-bottom a{ color:rgba(244,239,230,0.4); text-decoration:none; }
+  .footer-bottom a:hover{ color:var(--gold-bright); }
+  .footer-legal{ display:flex; gap:1.6rem; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width:900px){
+    /* Nav moves to bottom dock on small screens */
+    .side-nav{
+      top:auto; bottom:1.4rem;
+      left:50%;
+      transform:translateX(-50%);
+      flex-direction:row;
+      gap:0;
+      padding:0.5rem;
+      border-radius:999px;
+    }
+    .side-nav-link{
+      padding:0.6rem 0.8rem;
+      min-width:auto;
+    }
+    .side-nav-link::before{ display:none; }
+    .right-panel{ top:auto; bottom:5.8rem; right:1.2rem; transform:none; }
+    .pour-gauge{ display:none; }
+  }
+
+  @media (max-width:768px){
+    .panel{ padding:0 7vw; }
+    .align-left,.align-right{ align-items:center; text-align:center; }
+    .text-block{ max-width:100%; padding:2rem 1.8rem; border-left:none; border-right:none; border-top:1px solid rgba(200,164,92,0.35); }
+    .site-header{ padding:1.5rem 6vw; }
+    .ground-section{ padding:5rem 7vw; }
+    .benefits-grid{ grid-template-columns:1fr; gap:1.4rem; }
+    .products-grid{ grid-template-columns:1fr; gap:1.8rem; }
+    .about-wrap{ grid-template-columns:1fr; gap:2.6rem; }
+    .about-visual{ order:-1; max-width:360px; margin:0 auto; }
+    .about-stats{ gap:1.8rem; }
+    .footer-top{ grid-template-columns:1fr 1fr; gap:2.4rem 1.6rem; }
+    .footer-brand{ grid-column:1 / -1; }
+    .footer-bottom{ flex-direction:column; align-items:flex-start; }
+    .organic-strip{ gap:1.2rem; }
+    .organic-strip svg{ width:26px; height:26px; }
+  }
+
+  @media (max-width:520px){
+    .footer-top{ grid-template-columns:1fr; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .scroll-cue-line{ animation:none; }
+    .loader-bar-fill{ animation:none; }
+    .float-a,.float-b,.float-c{ animation:none; }
+  }
+
+  /* ===== TESTIMONIALS SECTION ===== */
+  .testimonials-section{
+    position:relative;
+    z-index:2;
+    background:var(--roast-2);
+    padding:7.5rem 0 8rem;
+    overflow:hidden;
+    border-top:1px solid var(--line);
+  }
+  .testimonials-section .section-head{
+    padding:0 6vw;
+    margin-bottom:1rem;
+  }
+
+  /* Google badge */
+  .google-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:0.8rem;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:999px;
+    padding:0.55rem 1.1rem 0.55rem 0.7rem;
+    margin:0 auto 2.8rem;
+    backdrop-filter:blur(12px);
+  }
+  .google-g{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .google-g svg{ width:18px; height:18px; }
+  .google-badge-text{ display:flex; flex-direction:column; gap:0.15rem; }
+  .google-badge-rating{ display:flex; align-items:center; gap:0.4rem; }
+  .google-badge-score{ font-size:1rem; font-weight:700; color:#fff; line-height:1; }
+  .google-stars{ display:flex; gap:2px; }
+  .google-stars svg{ width:13px; height:13px; fill:#FBBC05; }
+  .google-badge-count{ font-size:0.62rem; letter-spacing:0.08em; color:var(--smoke); }
+
+  /* Marquee track */
+  .testi-track-wrap{
+    position:relative;
+    overflow:hidden;
+    padding:1.6rem 0;
+  }
+  .testi-track-wrap::before,
+  .testi-track-wrap::after{
+    content:'';
+    position:absolute;
+    top:0; bottom:0;
+    width:120px;
+    z-index:2;
+    pointer-events:none;
+  }
+  .testi-track-wrap::before{ left:0; background:linear-gradient(to right,var(--roast-2),transparent); }
+  .testi-track-wrap::after{ right:0; background:linear-gradient(to left,var(--roast-2),transparent); }
+
+  .testi-track{
+    display:flex;
+    gap:1.8rem;
+    width:max-content;
+    animation:marqueeScroll 38s linear infinite;
+  }
+  .testi-track:hover{ animation-play-state:paused; }
+  .testi-track-2{
+    animation-direction:reverse;
+    animation-duration:44s;
+    margin-top:1.6rem;
+  }
+  @keyframes marqueeScroll{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
+  }
+
+  /* Individual card */
+  .testi-card{
+    width:320px;
+    flex-shrink:0;
+    background:linear-gradient(160deg,rgba(244,239,230,0.055),rgba(244,239,230,0.012));
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:1.8rem 1.7rem 1.6rem;
+    position:relative;
+    transition:border-color .4s var(--ease), transform .4s var(--ease), box-shadow .4s var(--ease);
+    cursor:default;
+  }
+  .testi-card:hover{
+    border-color:rgba(200,164,92,0.5);
+    transform:translateY(-6px);
+    box-shadow:0 20px 50px rgba(0,0,0,0.4), 0 0 40px rgba(200,164,92,0.08);
+  }
+
+  /* Quote mark */
+  .testi-quote-mark{
+    position:absolute;
+    top:1.2rem;
+    right:1.4rem;
+    font-size:3.5rem;
+    line-height:1;
+    color:var(--gold);
+    opacity:0.18;
+    font-family:Georgia,serif;
+    pointer-events:none;
+  }
+
+  /* Stars */
+  .testi-stars{ display:flex; gap:3px; margin-bottom:0.9rem; }
+  .testi-stars svg{ width:14px; height:14px; fill:#FBBC05; }
+
+  /* Text */
+  .testi-text{
+    font-size:0.88rem;
+    font-weight:300;
+    line-height:1.72;
+    color:var(--smoke);
+    margin-bottom:1.4rem;
+  }
+
+  /* Author row */
+  .testi-author{
+    display:flex;
+    align-items:center;
+    gap:0.85rem;
+    border-top:1px solid var(--line);
+    padding-top:1.1rem;
+  }
+  .testi-avatar{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--gold);
+    flex-shrink:0;
+    background:var(--roast);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .testi-avatar img{ width:100%; height:100%; object-fit:cover; border-radius:50%; }
+  .testi-avatar-initials{
+    font-size:1rem;
+    font-weight:600;
+    color:var(--gold);
+  }
+  .testi-meta{ display:flex; flex-direction:column; gap:0.2rem; }
+  .testi-name{ font-size:0.85rem; font-weight:600; color:#fff; }
+  .testi-role{ font-size:0.66rem; letter-spacing:0.09em; text-transform:uppercase; color:rgba(244,239,230,0.45); }
+
+  /* Google verified badge on card */
+  .testi-google{
+    position:absolute;
+    top:1.2rem;
+    left:1.7rem;
+    display:flex;
+    align-items:center;
+    gap:0.3rem;
+    font-size:0.56rem;
+    letter-spacing:0.08em;
+    color:rgba(244,239,230,0.4);
+    text-transform:uppercase;
+  }
+  .testi-google svg{ width:12px; height:12px; }
+
+  @media (max-width:768px){
+    .testi-card{ width:280px; }
+    .google-badge{ margin-left:6vw; }
+  }
+
+  /* ===== MOBILE VIDEO & LAYOUT FIXES (desktop untouched) ===== */
+  @media (max-width:768px){
+
+    /* Video wrapper — strict viewport clip */
+    .video-wrapper{
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    /* Video: center + show BOTTOM of frame so mug is fully visible */
+    #bg-video{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: auto;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      object-position: center 70%;  /* pull frame down = mug visible */
+    }
+
+    /* Overlay slightly darker for text readability */
+    .video-overlay{
+      background: linear-gradient(
+        to bottom,
+        rgba(11,10,9,0.75) 0%,
+        rgba(11,10,9,0.25) 30%,
+        rgba(11,10,9,0.25) 60%,
+        rgba(11,10,9,0.90) 100%
+      );
+    }
+
+    /* Video status bar: above bottom nav, compact */
+    .video-status{
+      bottom: 5.8rem;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.4rem 0.55rem;
+      gap: 0.5rem;
+      max-width: calc(100vw - 2rem);
+      white-space: nowrap;
+      font-size: 0.7rem;
+    }
+    .video-progress-bar{ width: 75px; }
+    .video-progress{ font-size: 0.68rem; gap: 0.35rem; }
+    .video-status-social{ display: none; } /* hide social in status bar on mobile */
+
+    /* Right panel: move up, smaller, no overlap */
+    .right-panel{
+      top: auto;
+      bottom: 5.5rem;
+      right: 0.8rem;
+      transform: none;
+      gap: 0.4rem;
+    }
+    /* Hide side social column on mobile — keep only cart */
+    .side-social{ display: none; }
+    .side-cart{
+      padding: 0.7rem 0.75rem;
+      min-width: 44px;
+      font-size: 0.55rem;
+    }
+    .side-cart svg{ width: 16px; height: 16px; }
+
+    /* Hero panel: padding so text clear of cart and bottom nav */
+    .hero{
+      padding-bottom: 8rem;
+      padding-top: 5rem;
+      padding-right: 4rem; /* clear cart button on right */
+    }
+
+    /* Header logo smaller */
+    .brand-mark{ width: 54px; height: 54px; min-width: 54px; min-height: 54px; }
+    .brand-word{ font-size: 1.15rem; }
+    .site-header{ padding: 1rem 4vw; }
+  }
+
+  @media (max-width:480px){
+    .video-status{ bottom: 5.2rem; }
+    h1{ font-size: clamp(2.1rem, 10.5vw, 3.2rem); }
+    .hero{ padding-right: 3.5rem; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- FIXED BACKGROUND VIDEO -->
+  <div class="video-wrapper">
+    <video id="bg-video" muted playsinline
+           preload="none"
+           disableremoteplayback
+           x-webkit-airplay="deny"
+           style="will-change:transform;">
+      <source src="" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+    <div class="video-status" id="videoStatus" aria-hidden="true">
+      <div class="video-progress" role="status" aria-label="Video completion">
+        <span id="videoProgressLabel">0%</span>
+        <div class="video-progress-bar" aria-hidden="true"><div class="video-progress-fill" id="videoProgressFill"></div></div>
+      </div>
+      <div class="video-status-social" aria-hidden="true">
+        <a href="#" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" width="14" height="14"><rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" fill="none"/></svg>
+        </a>
+        <a href="#" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" width="14" height="14"><path d="M14 9h2.5V6H14c-2 0-3.5 1.5-3.5 3.5V11H8v3h2.5v6h3v-6H16l.5-3h-3V9.6c0-.4.2-.6.5-.6Z" stroke="currentColor" fill="none"/></svg>
+        </a>
+        <a href="#" aria-label="TikTok">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke-width="1.2" fill="none" stroke="currentColor"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+        </a>
+        <a href="#" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24" width="14" height="14"><path d="M7 17 5 20l3-1a8 8 0 1 0-1-2Z" stroke="currentColor" fill="none"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADER -->
+  <div class="loader" id="loader">
+    <div class="loader-content">
+      <div class="loader-mark" aria-hidden="true">
+        <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="logo-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#F4E3A8"/>
+              <stop offset="100%" stop-color="#C8A45C"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="48" cy="76" rx="28" ry="8" fill="rgba(244,239,230,0.14)"/>
+          <path d="M26 56c0 12 9 20 22 20s22-8 22-20V42H26v14Z" fill="rgba(244,239,230,0.08)" stroke="url(#logo-gold)" stroke-width="4"/>
+          <path d="M26 42c0-6 10-10 22-10s22 4 22 10" fill="none" stroke="url(#logo-gold)" stroke-width="4"/>
+          <path d="M62 44h10a8 8 0 0 1 0 16h-10" fill="none" stroke="url(#logo-gold)" stroke-width="4" stroke-linecap="round"/>
+          <g class="steam">
+            <path d="M34 22c4-10 10-14 14-10s0 12-4 16"/>
+            <path d="M42 18c4-10 10-14 14-10s0 12-4 16"/>
+            <path d="M50 14c3-8 8-12 12-10s0 10-4 14"/>
+          </g>
+        </svg>
+      </div>
+      <div class="loader-brand">
+        <div class="loader-title">Coffeepio</div>
+        <div class="loader-subtitle">Crafted in ritual</div>
+      </div>
+      <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="#home" class="brand" aria-label="Coffeepio — home">
+      <div class="brand-mark">
+        <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="logo-gold-2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#F4E3A8"/>
+              <stop offset="100%" stop-color="#C8A45C"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="48" cy="76" rx="22" ry="6" fill="rgba(244,239,230,0.14)"/>
+          <path d="M30 54c0 9 7 15 18 15s18-6 18-15V42H30v12Z" fill="rgba(244,239,230,0.08)" stroke="url(#logo-gold-2)" stroke-width="3.5"/>
+          <path d="M30 42c0-5 8-9 18-9s18 4 18 9" fill="none" stroke="url(#logo-gold-2)" stroke-width="3.5"/>
+          <path d="M58 44h8a6 6 0 0 1 0 12h-8" fill="none" stroke="url(#logo-gold-2)" stroke-width="3.5" stroke-linecap="round"/>
+          <g class="steam">
+            <path d="M36 22c4-10 10-14 14-10s0 12-4 16"/>
+            <path d="M42 18c4-10 10-14 14-10s0 12-4 16"/>
+            <path d="M50 14c3-8 8-12 12-10s0 10-4 14"/>
+          </g>
+        </svg>
+      </div>
+      <span class="brand-word">Coffeep<span class="accent-dot">io</span></span>
+    </a>
+  </header>
+
+  <!-- CENTER FLOATING NAVIGATION -->
+  <nav class="side-nav" aria-label="Primary">
+    <a href="#home" class="side-nav-link active" data-nav="home">
+      <span class="side-nav-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 9.8V20h13V9.8"/><path d="M10 20v-6h4v6"/></svg>
+      </span>
+      <span class="side-nav-text">Home</span>
+    </a>
+    <a href="#about" class="side-nav-link" data-nav="about">
+      <span class="side-nav-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.6" r="0.9" fill="currentColor" stroke="none"/></svg>
+      </span>
+      <span class="side-nav-text">About</span>
+    </a>
+    <a href="#products" class="side-nav-link" data-nav="products">
+      <span class="side-nav-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 10.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 8Z"/><path d="M9 8V6.2A3 3 0 0 1 12 3.2a3 3 0 0 1 3 3V8"/></svg>
+      </span>
+      <span class="side-nav-text">Products</span>
+    </a>
+    <a href="#contact" class="side-nav-link" data-nav="contact">
+      <span class="side-nav-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="3.2" y="5.5" width="17.6" height="13" rx="1.6"/><path d="M4 7l8 6 8-6"/></svg>
+      </span>
+      <span class="side-nav-text">Contact</span>
+    </a>
+  </nav>
+
+  <!-- RIGHT PANEL — Cart + Social -->
+  <div class="right-panel">
+    <button class="side-cart" id="cartBtn" type="button" aria-label="View cart">
+      <svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 12.2a1.8 1.8 0 0 0 1.78 1.5h8.04a1.8 1.8 0 0 0 1.77-1.46L20.5 8H6"/><circle cx="9.5" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/></svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+
+    <div class="side-social">
+      <a href="#" class="side-social-link" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.6"/><circle cx="17" cy="7" r="0.6" fill="#F4EFE6" stroke="none"/></svg>
+      </a>
+      <a href="#" class="side-social-link" aria-label="Facebook">
+        <svg viewBox="0 0 24 24"><path d="M14 9h2.5V6H14c-2 0-3.5 1.5-3.5 3.5V11H8v3h2.5v6h3v-6H16l.5-3h-3V9.6c0-.4.2-.6.5-.6Z"/></svg>
+      </a>
+      <a href="#" class="side-social-link" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+      </a>
+      <a href="#" class="side-social-link" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24"><path d="M7 17 5 20l3-1a8 8 0 1 0-1-2Z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- POUR GAUGE — fixed LEFT beside nav pill -->
+  <div class="pour-gauge" aria-hidden="true">
+    <div class="pour-gauge-track">
+      <div class="pour-gauge-fill" id="pourFill"></div>
+    </div>
+    <span class="pour-gauge-label" id="pourLabel">0%</span>
+  </div>
+
+  <!-- SCROLLING CONTENT -->
+  <main class="content">
+
+    <!-- HERO -->
+    <section class="panel hero" id="home">
+      <span class="eyebrow reveal">COFFEEPIO — ROASTED IN RITUAL</span>
+      <h1 class="reveal">Awaken<br><span class="gold">Your Senses</span></h1>
+      <p class="sub reveal">Weight in the cup. Warmth on the skin. The quiet first breath of steam before the day begins.</p>
+      <div class="scroll-cue reveal">
+        <span class="scroll-cue-line"></span>
+        SCROLL
+      </div>
+    </section>
+
+    <!-- THE BEAN -->
+    <section class="panel align-left">
+      <div class="text-block">
+        <span class="eyebrow reveal">I — THE BEAN</span>
+        <h2 class="reveal heading-split"><span class="w">Sourced for the</span><br><span class="g">Perfect Roast</span></h2>
+        <p class="reveal">Every batch is selected by hand, roasted in small drums, and rested before grinding — never assembly, always craft. Coffeepio works directly with growers so the bean reaches you within days of roasting, not months.</p>
+      </div>
+    </section>
+
+    <!-- THE BREW -->
+    <section class="panel align-right">
+      <div class="text-block">
+        <span class="eyebrow reveal">II — THE BREW</span>
+        <h2 class="reveal heading-split"><span class="w">Experience</span><br><span class="g">the Warmth</span></h2>
+        <p class="reveal">From a sharp, focused espresso to a slow, milk-soft latte — each cup is pulled to order and finished by hand, so what reaches your table tastes exactly the way it should.</p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="panel final">
+      <span class="eyebrow reveal">III — THE RITUAL</span>
+      <h2 class="reveal heading-split"><span class="w">Choose Your</span><br><span class="g">Ritual</span></h2>
+      <p class="reveal">Five brews. One obsession with detail.</p>
+      <a href="#products" class="cta reveal">Explore the Collection</a>
+    </section>
+
+  </main>
+
+  <!-- GROUND SECTIONS -->
+  <div class="ground">
+
+    <!-- BENEFITS -->
+    <section class="ground-section" id="benefits">
+      <div class="bean-field" aria-hidden="true">
+        <svg class="float-a" style="top:8%;left:6%;width:46px;height:46px;" viewBox="0 0 40 40"><ellipse cx="20" cy="20" rx="13" ry="17" fill="#3B2415" transform="rotate(-18 20 20)"/><path d="M20 5 C20 12 20 28 20 35" stroke="#1C140E" stroke-width="1.6" transform="rotate(-18 20 20)"/></svg>
+        <svg class="float-b" style="top:62%;left:3%;width:30px;height:30px;" viewBox="0 0 40 40"><path d="M20 4c9 4 13 13 9 22-3 7-11 11-18 8-6-3-9-10-6-16 2-5 8-7 12-5" fill="#2E5C3E" opacity="0.55"/></svg>
+        <svg class="float-c" style="top:20%;right:8%;width:40px;height:40px;" viewBox="0 0 40 40"><ellipse cx="20" cy="20" rx="12" ry="16" fill="#4A2E1A" transform="rotate(24 20 20)"/><path d="M20 5 C20 12 20 28 20 35" stroke="#1C140E" stroke-width="1.5" transform="rotate(24 20 20)"/></svg>
+        <svg class="float-a" style="top:75%;right:14%;width:26px;height:26px;" viewBox="0 0 40 40"><path d="M20 4c9 4 13 13 9 22-3 7-11 11-18 8-6-3-9-10-6-16 2-5 8-7 12-5" fill="#2E5C3E" opacity="0.45"/></svg>
+      </div>
+
+      <div class="section-head reveal">
+        <span class="eyebrow">WHY COFFEE</span>
+        <h2 class="heading-split"><span class="w">Good for the Mind.</span><br><span class="g">Better for the Morning.</span></h2>
+        <p>Beyond the ritual, every cup carries real, well-documented benefits — drawn from real beans and real leaves, not shortcuts.</p>
+      </div>
+
+      <div class="benefits-grid">
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">
+            <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23" fill="none" stroke="#C8A45C" stroke-width="1.3" opacity="0.5"/><path d="M26 14a12 12 0 1 0 11.5 8.4" fill="none" stroke="#E8C988" stroke-width="1.8" stroke-linecap="round"/><circle cx="26" cy="26" r="3" fill="#E8C988"/></svg>
+          </div>
+          <h3>Sharper Focus</h3>
+          <p>A measured dose of natural caffeine improves alertness and concentration, helping the mind settle into deep work faster.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">
+            <svg viewBox="0 0 52 52"><path d="M26 8c8 8 14 16 14 23a14 14 0 1 1-28 0c0-7 6-15 14-23Z" fill="none" stroke="#C8A45C" stroke-width="1.5"/><path d="M19 30c0 4 3 7 7 7" fill="none" stroke="#E8C988" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Rich in Antioxidants</h3>
+          <p>Roasted beans carry naturally occurring antioxidants that help the body counter everyday oxidative stress.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">
+            <svg viewBox="0 0 52 52"><path d="M14 36c4-12 10-20 12-22 2 2 8 10 12 22" fill="none" stroke="#C8A45C" stroke-width="1.5" stroke-linecap="round"/><path d="M16 36h20" stroke="#E8C988" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Steady Energy</h3>
+          <p>A well-pulled cup releases its lift gradually, avoiding the sharp crash that comes with sugary energy drinks.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">
+            <svg viewBox="0 0 52 52"><circle cx="26" cy="22" r="9" fill="none" stroke="#C8A45C" stroke-width="1.5"/><path d="M26 31v9M20 44h12" stroke="#E8C988" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Daily Ritual</h3>
+          <p>A few quiet minutes with a cup gives the day a deliberate starting point — a pause before the pace picks up.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">
+            <svg viewBox="0 0 52 52"><path d="M26 6c10 5 15 14 9 24-4 7-13 10-19 6-5-4-6-12-1-17 3-3 8-4 11-1" fill="none" stroke="#C8A45C" stroke-width="1.5"/></svg>
+          </div>
+          <h3>Natural Leaves &amp; Beans</h3>
+          <p>No artificial flavouring — every Coffeepio blend starts from whole roasted beans, ground fresh, table-side.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">
+            <svg viewBox="0 0 52 52"><rect x="14" y="16" width="24" height="22" rx="2" fill="none" stroke="#C8A45C" stroke-width="1.5"/><path d="M14 22h24M21 16v-4M31 16v-4" stroke="#E8C988" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Small-Batch Roasting</h3>
+          <p>Roasted in limited drums and rested before grinding, so what reaches the cup is never stale or over-baked.</p>
+        </div>
+      </div>
+
+      <div class="organic-strip reveal" aria-hidden="true">
+        <span class="divider-line"></span>
+        <svg viewBox="0 0 40 40"><ellipse cx="20" cy="20" rx="12" ry="16" fill="#4A2E1A"/><path d="M20 5 C20 12 20 28 20 35" stroke="#1C140E" stroke-width="1.5"/></svg>
+        <svg viewBox="0 0 40 40"><path d="M20 4c9 4 13 13 9 22-3 7-11 11-18 8-6-3-9-10-6-16 2-5 8-7 12-5" fill="#2E5C3E"/></svg>
+        <svg viewBox="0 0 40 40"><ellipse cx="20" cy="20" rx="12" ry="16" fill="#3B2415"/><path d="M20 5 C20 12 20 28 20 35" stroke="#1C140E" stroke-width="1.5"/></svg>
+        <span class="divider-line"></span>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section class="ground-section" id="products">
+      <div class="section-head reveal">
+        <span class="eyebrow">THE MENU</span>
+        <h2 class="heading-split"><span class="w">Five Brews,</span><br><span class="g">One Standard</span></h2>
+        <p>Pulled, poured, or blended fresh to order — each cup made the way it's meant to be, no shortcuts.</p>
+      </div>
+
+      <div class="products-grid">
+
+        <!-- PRODUCT 1 — Black Coffee -->
+        <article class="product-card from-left reveal" data-name="Simple Black Coffee" data-price="350">
+          <div class="product-media">
+            <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80&fit=crop" alt="Simple Black Coffee — hot black coffee in a white ceramic cup" loading="lazy">
+            <div class="product-media-overlay"></div>
+            <span class="product-badge">Classic</span>
+          </div>
+          <div class="product-body">
+            <div class="product-top">
+              <span class="product-name">Simple Black Coffee</span>
+              <span class="product-price">Rs. 350</span>
+            </div>
+            <p class="product-desc">Pure, bold, and unapologetic. A single-origin pour, brewed black with no additions — sharp clarity in every sip.</p>
+            <div class="product-meta">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+              Hot · 200ml
+            </div>
+            <button class="add-cart-btn" type="button">
+              <svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 12.2a1.8 1.8 0 0 0 1.78 1.5h8.04a1.8 1.8 0 0 0 1.77-1.46L20.5 8H6"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </article>
+
+        <!-- PRODUCT 2 — Cappuccino -->
+        <article class="product-card from-bottom reveal" data-name="Cappuccino" data-price="480">
+          <div class="product-media">
+            <img src="https://images.unsplash.com/photo-1534040385115-33dcb3acba5b?w=600&q=80&fit=crop" alt="Cappuccino with latte art in a ceramic cup" loading="lazy">
+            <div class="product-media-overlay"></div>
+            <span class="product-badge">Best Seller</span>
+          </div>
+          <div class="product-body">
+            <div class="product-top">
+              <span class="product-name">Cappuccino</span>
+              <span class="product-price">Rs. 480</span>
+            </div>
+            <p class="product-desc">Equal parts espresso, steamed milk, and velvety foam — balanced and smooth, finished with hand-poured latte art.</p>
+            <div class="product-meta">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+              Hot · 220ml
+            </div>
+            <button class="add-cart-btn" type="button">
+              <svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 12.2a1.8 1.8 0 0 0 1.78 1.5h8.04a1.8 1.8 0 0 0 1.77-1.46L20.5 8H6"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </article>
+
+        <!-- PRODUCT 3 — Cold Coffee -->
+        <article class="product-card from-right reveal" data-name="Cold Coffee" data-price="420">
+          <div class="product-media">
+            <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&q=80&fit=crop" alt="Cold coffee with ice in a tall glass" loading="lazy">
+            <div class="product-media-overlay"></div>
+            <span class="product-badge">Chilled</span>
+          </div>
+          <div class="product-body">
+            <div class="product-top">
+              <span class="product-name">Cold Coffee</span>
+              <span class="product-price">Rs. 420</span>
+            </div>
+            <p class="product-desc">Chilled, blended, and poured over ice. Cold milk, fresh coffee, and a smooth finish — the perfect summer ritual.</p>
+            <div class="product-meta">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+              Cold · 300ml
+            </div>
+            <button class="add-cart-btn" type="button">
+              <svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 12.2a1.8 1.8 0 0 0 1.78 1.5h8.04a1.8 1.8 0 0 0 1.77-1.46L20.5 8H6"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </article>
+
+        <!-- PRODUCT 4 — Espresso -->
+        <article class="product-card from-left reveal" data-name="Espresso" data-price="320">
+          <div class="product-media">
+            <img src="https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=600&q=80&fit=crop" alt="Espresso shot with golden crema in a small cup" loading="lazy">
+            <div class="product-media-overlay"></div>
+            <span class="product-badge">Intense</span>
+          </div>
+          <div class="product-body">
+            <div class="product-top">
+              <span class="product-name">Espresso</span>
+              <span class="product-price">Rs. 320</span>
+            </div>
+            <p class="product-desc">A concentrated 30ml shot pulled under high pressure — bold crema on top, dense flavour below. Coffee at its purest.</p>
+            <div class="product-meta">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+              Hot · 30ml
+            </div>
+            <button class="add-cart-btn" type="button">
+              <svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 12.2a1.8 1.8 0 0 0 1.78 1.5h8.04a1.8 1.8 0 0 0 1.77-1.46L20.5 8H6"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </article>
+
+        <!-- PRODUCT 5 — Latte -->
+        <article class="product-card from-right reveal" data-name="Latte" data-price="500">
+          <div class="product-media">
+            <img src="https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?w=600&q=80&fit=crop" alt="Latte with latte art in a glass cup on wooden table" loading="lazy">
+            <div class="product-media-overlay"></div>
+            <span class="product-badge">Silky</span>
+          </div>
+          <div class="product-body">
+            <div class="product-top">
+              <span class="product-name">Latte</span>
+              <span class="product-price">Rs. 500</span>
+            </div>
+            <p class="product-desc">A long, milk-forward drink built on a double shot — smooth, creamy, and easy on the palate from the first to the last sip.</p>
+            <div class="product-meta">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+              Hot · 280ml
+            </div>
+            <button class="add-cart-btn" type="button">
+              <svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 12.2a1.8 1.8 0 0 0 1.78 1.5h8.04a1.8 1.8 0 0 0 1.77-1.46L20.5 8H6"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ABOUT US -->
+    <section class="ground-section" id="about">
+      <div class="about-wrap">
+        <div class="about-copy from-left">
+          <span class="eyebrow reveal">OUR STORY</span>
+          <h2 class="reveal heading-split"><span class="w">Coffee, Made</span><br><span class="g">the Way It Should Be</span></h2>
+          <p class="reveal">Coffeepio began with a simple frustration: most coffee sold fast was never made fresh. So we built a small, deliberate menu — five brews, each pulled, poured, or blended only after you order, never sitting, never reheated.</p>
+          <p class="reveal">We roast in small batches, rest the beans before grinding, and finish every cup by hand. No syrups standing in for flavour, no shortcuts standing in for craft — just real beans, real milk, and real attention.</p>
+          <div class="about-stats reveal">
+            <div>
+              <div class="about-stat-num">5+</div>
+              <div class="about-stat-label">Signature Brews</div>
+            </div>
+            <div>
+              <div class="about-stat-num">100%</div>
+              <div class="about-stat-label">Made Fresh to Order</div>
+            </div>
+            <div>
+              <div class="about-stat-num">24h</div>
+              <div class="about-stat-label">Roast-to-Cup Window</div>
+            </div>
+          </div>
+        </div>
+        <div class="about-visual from-right">
+          <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80&fit=crop&crop=center" alt="Barista crafting coffee in a warm-lit artisan coffee shop" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials-section" id="testimonials">
+    <div class="section-head reveal">
+      <span class="eyebrow">WHAT PEOPLE SAY</span>
+      <h2 class="heading-split"><span class="w">Loved by</span><br><span class="g">Real Coffee Lovers</span></h2>
+      <p>Fresh cups, honest opinions — straight from our customers in Lahore and beyond.</p>
+    </div>
+
+    <!-- Google Badge -->
+    <div style="display:flex;justify-content:center;padding:0 6vw;">
+      <div class="google-badge reveal">
+        <div class="google-g">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+        </div>
+        <div class="google-badge-text">
+          <div class="google-badge-rating">
+            <span class="google-badge-score">4.9</span>
+            <div class="google-stars">
+              <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+              <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+              <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+              <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+              <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            </div>
+          </div>
+          <span class="google-badge-count">Based on 248 Google Reviews</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 1 — left scroll -->
+    <div class="testi-track-wrap">
+      <div class="testi-track">
+        <!-- Card 1 -->
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+          <p class="testi-text">Sabse best coffee Lahore mein. The espresso is just perfect — thick crema, rich flavour, and absolutely no bitterness. I visit every single morning now.</p>
+          <div class="testi-author">
+            <div class="testi-avatar"><div class="testi-avatar-initials">AK</div></div>
+            <div class="testi-meta">
+              <span class="testi-name">Ahmad Khalid</span>
+              <span class="testi-role">Regular Customer · DHA Lahore</span>
+            </div>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+          <p class="testi-text">The cold coffee is something else. Perfectly chilled, creamy, and not too sweet. Finally found a place that doesn't drown it in sugar. Coming back every weekend!</p>
+          <div class="testi-author">
+            <div class="testi-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face" alt="Sana Mirza"/></div>
+            <div class="testi-meta">
+              <span class="testi-name">Sana Mirza</span>
+              <span class="testi-role">Blogger · Gulberg</span>
+            </div>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+          <p class="testi-text">Cappuccino ka foam is level ka tha ke main samajh nahi saka ye Lahore mein hai. The attention to every detail — temperature, texture, everything — is exceptional.</p>
+          <div class="testi-author">
+            <div class="testi-avatar"><div class="testi-avatar-initials">UF</div></div>
+            <div class="testi-meta">
+              <span class="testi-name">Usman Farooq</span>
+              <span class="testi-role">Architect · Model Town</span>
+            </div>
+          </div>
+        </div>
+        <!-- Card 4 -->
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+          <p class="testi-text">Ordered the latte and honestly it was better than anything I've had in Karachi or Islamabad. The beans taste freshly roasted — you can tell the difference immediately.</p>
+          <div class="testi-author">
+            <div class="testi-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="Bilal Raza"/></div>
+            <div class="testi-meta">
+              <span class="testi-name">Bilal Raza</span>
+              <span class="testi-role">Visiting from Karachi</span>
+            </div>
+          </div>
+        </div>
+        <!-- DUPLICATE for seamless loop -->
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+          <p class="testi-text">Sabse best coffee Lahore mein. The espresso is just perfect — thick crema, rich flavour, and absolutely no bitterness. I visit every single morning now.</p>
+          <div class="testi-author"><div class="testi-avatar"><div class="testi-avatar-initials">AK</div></div><div class="testi-meta"><span class="testi-name">Ahmad Khalid</span><span class="testi-role">Regular Customer · DHA</span></div></div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+          <p class="testi-text">The cold coffee is something else. Perfectly chilled, creamy, and not too sweet. Finally found a place that doesn't drown it in sugar. Coming back every weekend!</p>
+          <div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face" alt="Sana Mirza"/></div><div class="testi-meta"><span class="testi-name">Sana Mirza</span><span class="testi-role">Blogger · Gulberg</span></div></div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+          <p class="testi-text">Cappuccino ka foam is level ka tha ke main samajh nahi saka ye Lahore mein hai. Attention to detail — temperature, texture, everything — is exceptional.</p>
+          <div class="testi-author"><div class="testi-avatar"><div class="testi-avatar-initials">UF</div></div><div class="testi-meta"><span class="testi-name">Usman Farooq</span><span class="testi-role">Architect · Model Town</span></div></div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+          <p class="testi-text">Ordered the latte and honestly it was better than anything I've had anywhere. The beans taste freshly roasted — you can tell the difference immediately.</p>
+          <div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="Bilal Raza"/></div><div class="testi-meta"><span class="testi-name">Bilal Raza</span><span class="testi-role">Visiting from Karachi</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 2 — reverse scroll -->
+    <div class="testi-track-wrap">
+      <div class="testi-track testi-track-2">
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+          <p class="testi-text">Black coffee here is a revelation. No bitterness, just clean, roasted depth. I never thought I could drink it without sugar — now I refuse to add any.</p>
+          <div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face" alt="Nida Ali"/></div><div class="testi-meta"><span class="testi-name">Nida Ali</span><span class="testi-role">Designer · Johar Town</span></div></div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+          <p class="testi-text">Took a client here for a morning meeting — the atmosphere, the presentation of the cups, and of course the taste. Everyone was impressed. Definitely our new go-to spot.</p>
+          <div class="testi-author"><div class="testi-avatar"><div class="testi-avatar-initials">ZH</div></div><div class="testi-meta"><span class="testi-name">Zain Hassan</span><span class="testi-role">Entrepreneur · Gulberg III</span></div></div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+          <p class="testi-text">Maine bohot jagah cold coffee try ki hai — yahan wala sabse alag hai. Creamy texture, proper ice, aur beans ka taste clearly feel hota hai. Hamare ghar ke sab log ab fan hain.</p>
+          <div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" alt="Hina Baig"/></div><div class="testi-meta"><span class="testi-name">Hina Baig</span><span class="testi-role">Teacher · Faisal Town</span></div></div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+          <p class="testi-text">Best latte art I've seen in Lahore. The barista clearly knows what they're doing — it's not just for show, the balance of coffee and milk is exactly right. Will return.</p>
+          <div class="testi-author"><div class="testi-avatar"><div class="testi-avatar-initials">TM</div></div><div class="testi-meta"><span class="testi-name">Tariq Mahmood</span><span class="testi-role">Photographer · Bahria Town</span></div></div>
+        </div>
+        <!-- duplicates for seamless loop -->
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+          <p class="testi-text">Black coffee here is a revelation. No bitterness, just clean, roasted depth. I never thought I could drink it without sugar — now I refuse to add any.</p>
+          <div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face" alt="Nida Ali"/></div><div class="testi-meta"><span class="testi-name">Nida Ali</span><span class="testi-role">Designer · Johar Town</span></div></div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+          <p class="testi-text">Took a client here for a morning meeting — the atmosphere, presentation of the cups, and of course the taste. Everyone was impressed. Definitely our new go-to spot.</p>
+          <div class="testi-author"><div class="testi-avatar"><div class="testi-avatar-initials">ZH</div></div><div class="testi-meta"><span class="testi-name">Zain Hassan</span><span class="testi-role">Entrepreneur · Gulberg III</span></div></div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+          <p class="testi-text">Maine bohot jagah cold coffee try ki hai — yahan wala sabse alag hai. Creamy texture, proper ice, aur beans ka taste clearly feel hota hai. Hamare ghar ke sab log ab fan hain.</p>
+          <div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" alt="Hina Baig"/></div><div class="testi-meta"><span class="testi-name">Hina Baig</span><span class="testi-role">Teacher · Faisal Town</span></div></div>
+        </div>
+        <div class="testi-card">
+          <span class="testi-google"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Google Review</span>
+          <div class="testi-quote-mark">"</div>
+          <div class="testi-stars"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+          <p class="testi-text">Best latte art I've seen in Lahore. The barista clearly knows what they're doing — it's not just for show, the balance of coffee and milk is exactly right. Will return.</p>
+          <div class="testi-author"><div class="testi-avatar"><div class="testi-avatar-initials">TM</div></div><div class="testi-meta"><span class="testi-name">Tariq Mahmood</span><span class="testi-role">Photographer · Bahria Town</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" id="contact">
+    <div class="footer-glow" aria-hidden="true"></div>
+
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#home" class="brand" aria-label="Coffeepio — home">
+          <div class="brand-mark">
+            <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="logo-gold-3" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#F4E3A8"/>
+                  <stop offset="100%" stop-color="#C8A45C"/>
+                </linearGradient>
+              </defs>
+              <ellipse cx="48" cy="76" rx="22" ry="6" fill="rgba(244,239,230,0.14)"/>
+              <path d="M30 54c0 9 7 15 18 15s18-6 18-15V42H30v12Z" fill="rgba(244,239,230,0.08)" stroke="url(#logo-gold-3)" stroke-width="3.5"/>
+              <path d="M30 42c0-5 8-9 18-9s18 4 18 9" fill="none" stroke="url(#logo-gold-3)" stroke-width="3.5"/>
+              <path d="M58 44h8a6 6 0 0 1 0 12h-8" fill="none" stroke="url(#logo-gold-3)" stroke-width="3.5" stroke-linecap="round"/>
+              <g class="steam">
+                <path d="M36 22c4-10 10-14 14-10s0 12-4 16"/>
+                <path d="M42 18c4-10 10-14 14-10s0 12-4 16"/>
+                <path d="M50 14c3-8 8-12 12-10s0 10-4 14"/>
+              </g>
+            </svg>
+          </div>
+          <span class="brand-word">Coffeep<span class="accent-dot">io</span></span>
+        </a>
+        <p>Small-batch coffee, roasted in ritual. Five signature brews, made fresh to order, every single time.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.6"/><circle cx="17" cy="7" r="0.6" fill="#F4EFE6" stroke="none"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 9h2.5V6H14c-2 0-3.5 1.5-3.5 3.5V11H8v3h2.5v6h3v-6H16l.5-3h-3V9.6c0-.4.2-.6.5-.6Z"/></svg></a>
+          <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg></a>
+          <a href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M7 17 5 20l3-1a8 8 0 1 0-1-2Z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5"/></svg></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Menu</h4>
+        <ul>
+          <li><a href="#products">Black Coffee</a></li>
+          <li><a href="#products">Cappuccino</a></li>
+          <li><a href="#products">Cold Coffee</a></li>
+          <li><a href="#products">Espresso</a></li>
+          <li><a href="#products">Latte</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24"><rect x="3.2" y="5.5" width="17.6" height="13" rx="1.6"/><path d="M4 7l8 6 8-6"/></svg>
+          <span>hello@coffeepio.pk</span>
+        </div>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24"><path d="M5 4h3.5l1.5 5-2.5 1.8a13 13 0 0 0 6.7 6.7L15.5 15l5 1.5V19a2 2 0 0 1-2 2C10.4 21 3 13.6 3 5.5A2 2 0 0 1 5 4Z"/></svg>
+          <span>+92 300 1234567</span>
+        </div>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.4"/></svg>
+          <span>Gulberg, Lahore, Pakistan</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Coffeepio. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script>
+
+    const video         = document.getElementById('bg-video');
+    const loaderEl      = document.getElementById('loader');
+    const loaderBarFill = loaderEl.querySelector('.loader-bar-fill');
+    const pourFill      = document.getElementById('pourFill');
+    const pourLabel     = document.getElementById('pourLabel');
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const VIDEO_SRC      = 'coffee1.mp4';
+    const LOADER_MIN_MS  = 2200;
+    const loaderStartTime = Date.now();
+    let   videoBlobUrl   = null;
+
+    // Guard: if GSAP (or ScrollTrigger) failed to load (CDN/network)
+    const animationsEnabled = !(typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined');
+    if (!animationsEnabled){
+      console.warn('GSAP or ScrollTrigger not available — running fallback.');
+    } else {
+      gsap.registerPlugin(ScrollTrigger);
+    }
+
+    function minimalFallback(){
+      try{ document.getElementById('loader').style.display = 'none'; }catch(e){}
+      const update = () => {
+        const docH = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docH>0 ? window.scrollY / docH : 0;
+        if (pourFill) pourFill.style.height = (progress*100) + '%';
+        if (pourLabel) pourLabel.textContent = Math.round(progress*100) + '%';
+        const vLabel = document.getElementById('videoProgressLabel');
+        const vFill  = document.getElementById('videoProgressFill');
+        if (vLabel) vLabel.textContent = Math.round(progress*100) + '%';
+        if (vFill) vFill.style.width = (progress*100) + '%';
+      };
+      window.addEventListener('scroll', update);
+      update();
+      document.querySelectorAll('.side-nav-link').forEach(link => {
+        link.addEventListener('click', e => { const target = document.getElementById(link.getAttribute('href').slice(1)); if (target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth', block:'start'}); } });
+      });
+      document.querySelectorAll('footer a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+          const id = a.getAttribute('href').slice(1);
+          const t = document.getElementById(id);
+          if (t){
+            e.preventDefault();
+            t.scrollIntoView({behavior:'smooth'});
+          }
+        });
+      });
+    }
+
+    function updateGauge(progress){
+      pourFill.style.height  = (progress * 100) + '%';
+      pourLabel.textContent  = Math.round(progress * 100) + '%';
+      // update visible video progress overlay as well
+      const vLabel = document.getElementById('videoProgressLabel');
+      const vFill  = document.getElementById('videoProgressFill');
+      if (vLabel) vLabel.textContent = Math.round(progress * 100) + '%';
+      if (vFill) vFill.style.width = (progress * 100) + '%';
+    }
+
+    function hideLoader(){
+      const elapsed = Date.now() - loaderStartTime;
+      const remaining = Math.max(0, LOADER_MIN_MS - elapsed);
+      setTimeout(() => {
+        if (animationsEnabled && typeof gsap !== 'undefined'){
+          gsap.to(loaderEl, { opacity:0, duration:0.8, ease:'power2.in', onComplete:() => { loaderEl.style.display='none'; } });
+        } else {
+          loaderEl.style.opacity = '0';
+          loaderEl.style.display = 'none';
+        }
+      }, remaining);
+    }
+
+    function initTextReveals(){
+      gsap.utils.toArray('.panel, .ground-section, .testimonials-section').forEach((panel) => {
+        const els = panel.querySelectorAll('.reveal');
+        if (!els.length) return;
+        if (prefersReduced){ gsap.set(els,{opacity:1,y:0}); return; }
+        gsap.fromTo(els,
+          {opacity:0, y:80, scale:0.97},
+          {opacity:1, y:0, scale:1, duration:1.1, ease:'power3.out', stagger:0.13,
+           scrollTrigger:{trigger:panel, start:'top 82%', toggleActions:'play none none reverse'}}
+        );
+      });
+    }
+
+    function initCardReveals(){
+      if (prefersReduced){
+        gsap.set('.product-card, .benefit-card', {opacity:1, x:0, y:0, scale:1});
+        return;
+      }
+
+      // Benefit cards — stronger staggered fade up (scroll triggered)
+      const benefitCards = gsap.utils.toArray('.benefits-grid .benefit-card');
+      if (benefitCards.length){
+        gsap.fromTo(benefitCards,
+          {opacity:0, y:60, scale:0.93},
+          {opacity:1, y:0, scale:1, duration:1.0, ease:'power3.out', stagger:0.11,
+           scrollTrigger:{trigger:benefitCards[0].closest('.ground-section'), start:'top 75%', toggleActions:'play none none reverse'}}
+        );
+      }
+
+      // Product cards — strong directional entrance (left / bottom / right)
+      const productSection = document.querySelector('#products');
+      if (!productSection) return;
+
+      const fromLeft   = gsap.utils.toArray('.product-card.from-left');
+      const fromBottom = gsap.utils.toArray('.product-card.from-bottom');
+      const fromRight  = gsap.utils.toArray('.product-card.from-right');
+
+      const sharedOpts = {
+        opacity:1, x:0, y:0, scale:1,
+        duration:1.25, ease:'power4.out',
+        scrollTrigger:{ trigger:productSection, start:'top 75%', toggleActions:'play none none reverse' }
+      };
+
+      if (fromLeft.length){
+        const tlL = gsap.fromTo(fromLeft,
+          {opacity:0, x:-180, scale:0.9},
+          {...sharedOpts, stagger:0.18, delay:0}
+        );
+        tlL.eventCallback('onComplete', () => {
+          gsap.to(fromLeft, { y:'-=' + 10, yoyo:true, repeat:-1, duration:3.6, ease:'sine.inOut', delay:0.3 });
+        });
+      }
+      if (fromBottom.length){
+        const tlB = gsap.fromTo(fromBottom,
+          {opacity:0, y:150, scale:0.9},
+          {...sharedOpts, stagger:0.18, delay:0.08}
+        );
+        tlB.eventCallback('onComplete', () => {
+          gsap.to(fromBottom, { y:'-=' + 8, yoyo:true, repeat:-1, duration:3.8, ease:'sine.inOut', delay:0.6 });
+        });
+      }
+      if (fromRight.length){
+        const tlR = gsap.fromTo(fromRight,
+          {opacity:0, x:180, scale:0.9},
+          {...sharedOpts, stagger:0.18, delay:0.16}
+        );
+        tlR.eventCallback('onComplete', () => {
+          gsap.to(fromRight, { y:'-=' + 10, yoyo:true, repeat:-1, duration:3.6, ease:'sine.inOut', delay:0.4 });
+        });
+      }
+    }
+
+    // Testimonials: cinematic curtain + floating cards
+    function initTestimonialAnimation(){
+      if (prefersReduced) return;
+      const testiSection = document.querySelector('.testimonials-section');
+      if (!testiSection) return;
+
+      // cards entrance
+      gsap.fromTo('.testi-card',
+        {opacity:0, y:36, rotationX:6},
+        {opacity:1, y:0, rotationX:0, duration:0.9, ease:'power3.out', stagger:0.08,
+         scrollTrigger:{trigger:testiSection, start:'top 88%', toggleActions:'play none none reverse'}}
+      );
+
+      // subtle floating after entrance
+      gsap.to('.testi-card', { y:'-=' + 6, yoyo:true, repeat:-1, duration:4.2, ease:'sine.inOut', delay:1.2 });
+    }
+
+    function initAboutAnimation(){
+      if (prefersReduced){
+        gsap.set('.about-copy, .about-visual', {opacity:1, x:0});
+        return;
+      }
+      const aboutSection = document.querySelector('#about');
+      if (!aboutSection) return;
+
+      const copy   = document.querySelector('.about-copy.from-left');
+      const visual = document.querySelector('.about-visual.from-right');
+
+      if (copy){
+        gsap.fromTo(copy,
+          {opacity:0, x:-120},
+          {opacity:1, x:0, duration:1.15, ease:'power3.out',
+           scrollTrigger:{trigger:aboutSection, start:'top 78%', toggleActions:'play none none reverse'}}
+        );
+      }
+      if (visual){
+        gsap.fromTo(visual,
+          {opacity:0, x:120},
+          {opacity:1, x:0, duration:1.15, delay:0.2, ease:'power3.out',
+           scrollTrigger:{trigger:aboutSection, start:'top 78%', toggleActions:'play none none reverse'}}
+        );
+      }
+    }
+
+    function initSideNav(){
+      const links   = gsap.utils.toArray('.side-nav-link');
+      const sections = ['home','about','products','contact']
+        .map(id => document.getElementById(id)).filter(Boolean);
+
+      sections.forEach(section => {
+        ScrollTrigger.create({
+          trigger:section, start:'top 55%', end:'bottom 55%',
+          onEnter:()     => setActive(section.id),
+          onEnterBack:() => setActive(section.id)
+        });
+      });
+
+      function setActive(id){
+        links.forEach(link => link.classList.toggle('active', link.dataset.nav === id));
+      }
+
+      links.forEach(link => {
+        link.addEventListener('click', e => {
+          const target = document.getElementById(link.getAttribute('href').slice(1));
+          if (target){ e.preventDefault(); target.scrollIntoView({behavior: prefersReduced ? 'auto' : 'smooth', block:'start'}); }
+        });
+      });
+    }
+
+    function initCart(){
+      const cartCount = document.getElementById('cartCount');
+      const cartBtn   = document.getElementById('cartBtn');
+      let count = 0;
+
+      document.querySelectorAll('.add-cart-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          count += 1;
+          cartCount.textContent = count;
+          btn.classList.add('added');
+          const original = btn.innerHTML;
+          btn.innerHTML = '<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> Added';
+          setTimeout(() => { btn.innerHTML = original; btn.classList.remove('added'); }, 1400);
+          gsap.fromTo(cartBtn, {scale:1}, {scale:1.12, duration:0.18, yoyo:true, repeat:1, ease:'power1.inOut'});
+        });
+      });
+    }
+
+    // ── VIDEO BLOB PRE-LOAD → instant seek → smooth scroll-scrub ────────
+    function preloadVideoBlob(onProgress, onReady) {
+      fetch(VIDEO_SRC)
+        .then(res => {
+          if (!res.ok) throw new Error('fetch failed');
+          const total = +res.headers.get('Content-Length') || 0;
+          const reader = res.body.getReader();
+          const chunks = [];
+          let received = 0;
+          function pump(){
+            return reader.read().then(({ done, value }) => {
+              if (done){
+                const blob = new Blob(chunks, { type:'video/mp4' });
+                onReady(URL.createObjectURL(blob));
+                return;
+              }
+              chunks.push(value);
+              received += value.length;
+              onProgress(total ? received / total : 0);
+              return pump();
+            });
+          }
+          return pump();
+        })
+        .catch(() => onReady(null));
+    }
+
+    function initVideoScrub(){
+      video.pause();
+      gsap.to(video, {
+        currentTime: video.duration,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.content', start: 'top top', end: 'bottom bottom',
+          scrub: prefersReduced ? true : 0.3,
+          onUpdate: self => updateGauge(self.progress)
+        }
+      });
+    }
+
+    function initScrollGauge(){
+      ScrollTrigger.create({
+        trigger:'.content', start:'top top', end:'bottom bottom',
+        onUpdate: self => updateGauge(self.progress)
+      });
+    }
+
+    let started = false;
+    function start(blobUrl){
+      if (started) return;
+      started = true;
+      if (blobUrl){
+        video.src = blobUrl;
+        videoBlobUrl = blobUrl;
+        video.load();
+        video.addEventListener('loadedmetadata', () => {
+          hideLoader();
+          initTextReveals();
+          initCardReveals();
+          initAboutAnimation();
+          initSideNav();
+          initCart();
+          initVideoScrub();
+          ScrollTrigger.refresh();
+        }, { once: true });
+      } else {
+        hideLoader();
+        initTextReveals();
+        initCardReveals();
+        initAboutAnimation();
+        initSideNav();
+        initCart();
+        initScrollGauge();
+        ScrollTrigger.refresh();
+      }
+    }
+
+    if (animationsEnabled){
+      // Show loader bar activity immediately
+      if (loaderBarFill){
+        loaderBarFill.style.transition = 'width 0.4s ease';
+        loaderBarFill.style.width = '12%';
+        setTimeout(() => { if(loaderBarFill) loaderBarFill.style.width = '30%'; }, 300);
+      }
+
+      preloadVideoBlob(
+        (progress) => {
+          const pct = Math.min(95, Math.round(progress * 100));
+          if (loaderBarFill) loaderBarFill.style.width = pct + '%';
+        },
+        (blobUrl) => {
+          if (loaderBarFill){
+            loaderBarFill.style.transition = 'width 0.3s ease';
+            loaderBarFill.style.width = '100%';
+          }
+          start(blobUrl);
+        }
+      );
+      initTestimonialAnimation();
+    } else {
+      minimalFallback();
+    }
+
+    // Footer smooth slow-scroll navigation
+    function easeInOutQuad(t){ return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
+    function smoothScrollTo(yTarget, duration = 1200){
+      const startY = window.scrollY || window.pageYOffset;
+      const startTime = performance.now();
+      const maxY = document.documentElement.scrollHeight - window.innerHeight;
+      const destination = Math.min(Math.max(0, yTarget), maxY);
+      function step(now){
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = easeInOutQuad(progress);
+        window.scrollTo(0, startY + (destination - startY) * ease);
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    function initFooterSmoothScroll(){
+      document.querySelectorAll('footer a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+          const href = a.getAttribute('href');
+          if (!href || href.charAt(0) !== '#') return;
+          const id = href.slice(1);
+          const target = document.getElementById(id);
+          if (!target) return;
+          e.preventDefault();
+          if (prefersReduced){ target.scrollIntoView({behavior:'smooth'}); return; }
+          const top = target.getBoundingClientRect().top + window.pageYOffset;
+          smoothScrollTo(top, 1400);
+        });
+      });
+    }
+    initFooterSmoothScroll();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Coffeepio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- AUTHENTICATION CONTAINER -->
+  <div id="auth-container" class="active">
+    <div class="auth-box">
+      <h2>Coffeepio Admin</h2>
+      <p>Please log in to access the backend.</p>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required>
+        </div>
+        <div id="auth-error" class="error-msg"></div>
+        <button type="submit" class="btn btn-primary" id="login-btn">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD CONTAINER -->
+  <div id="dashboard-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Coffeepio</h2>
+        <span class="badge">Admin</span>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" data-target="products-view">Products</button>
+        <button class="nav-btn" data-target="content-view">Website Content</button>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="logout-btn" class="btn btn-outline">Logout</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      
+      <!-- PRODUCTS VIEW -->
+      <section id="products-view" class="view-section active">
+        <div class="view-header">
+          <h1>Manage Products</h1>
+          <div class="header-actions">
+          <button class="btn btn-outline" id="seed-db-btn">Load Current Website Data</button>
+          <button class="btn btn-primary" id="add-product-btn">+ Add New Product</button>
+        </div>
+        </div>
+        
+        <div class="table-container">
+          <table id="products-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="products-list">
+              <!-- Products will be dynamically inserted here -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- CONTENT VIEW -->
+      <section id="content-view" class="view-section">
+        <div class="view-header">
+          <h1>Edit Website Content</h1>
+        </div>
+        
+        <form id="content-form" class="content-form">
+          
+          <div class="form-section">
+            <h3>Global Settings</h3>
+            <div class="form-group">
+              <label>Logo Text (e.g. Coffeepio)</label>
+              <input type="text" id="logo-text">
+            </div>
+            <div class="form-group">
+              <label>Background Video URL (e.g. coffee1.mp4)</label>
+              <input type="text" id="video-url">
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Hero Section</h3>
+            <div class="form-group">
+              <label>Hero Title (Use &lt;br&gt; for line breaks, wrap gold words in &lt;span class="gold"&gt;)</label>
+              <input type="text" id="hero-title">
+            </div>
+            <div class="form-group">
+              <label>Hero Subtitle</label>
+              <textarea id="hero-subtitle" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Section I: The Bean</h3>
+            <div class="form-group">
+              <label>Eyebrow</label>
+              <input type="text" id="s1-eyebrow">
+            </div>
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="s1-title">
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea id="s1-desc" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Section II: The Brew</h3>
+            <div class="form-group">
+              <label>Eyebrow</label>
+              <input type="text" id="s2-eyebrow">
+            </div>
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="s2-title">
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea id="s2-desc" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Benefits Section</h3>
+            <div class="form-group">
+              <label>Eyebrow</label>
+              <input type="text" id="s3-eyebrow">
+            </div>
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="s3-title">
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea id="s3-desc" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Footer</h3>
+            <div class="form-group">
+              <label>Brand Description</label>
+              <textarea id="footer-desc" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="text" id="footer-email">
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="text" id="footer-phone">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="save-content-btn">Save Changes</button>
+          <div id="content-success" class="success-msg"></div>
+        </form>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- PRODUCT MODAL -->
+  <div id="product-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">Add Product</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <form id="product-form">
+        <input type="hidden" id="product-id">
+        <div class="form-group">
+          <label for="product-name">Product Name</label>
+          <input type="text" id="product-name" required>
+        </div>
+        <div class="form-group">
+          <label for="product-price">Price (e.g. $18.00)</label>
+          <input type="text" id="product-price" required>
+        </div>
+        <div class="form-group">
+          <label for="product-desc">Description</label>
+          <textarea id="product-desc" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="product-image">Image URL (e.g. 1.jpg)</label>
+          <input type="text" id="product-image" required>
+        </div>
+        <div class="form-group">
+          <label for="product-badge">Badge (Optional, e.g. New)</label>
+          <input type="text" id="product-badge">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline close-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="save-product-btn">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

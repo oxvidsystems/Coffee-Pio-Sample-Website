@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0B0A09">
+<title>AURUM — The Ritual Mug</title>
+
+<!-- ============================================================
+     FONT (Inter — as requested, modern & highly readable)
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+  /* ============================================================
+     DESIGN TOKENS — change these 5 values to re-theme the whole page
+     ============================================================ */
+  :root{
+    --obsidian:     #0B0A09;                 /* background */
+    --porcelain:    #F4EFE6;                 /* primary text */
+    --gold:         #C8A45C;                 /* accent */
+    --gold-bright:  #E8C988;                 /* hover / active accent */
+    --smoke:        rgba(244,239,230,0.58);  /* muted text */
+    --ease:         cubic-bezier(.16,.84,.44,1);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html, body{
+    background: var(--obsidian);
+    color: var(--porcelain);
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  body{
+    font-family: 'Inter', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection{ background: var(--gold); color: var(--obsidian); }
+
+  a{ color: inherit; }
+
+  /* ============================================================
+     FIXED BACKGROUND VIDEO — stays put while content scrolls over it
+     ============================================================ */
+  .video-wrapper{
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 0;
+    background: var(--obsidian);
+    overflow: hidden;
+  }
+
+  #bg-video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center; /* adjust if your mug gets cropped oddly */
+    display: block;
+  }
+
+  /* Cinematic vignette: darkens top (hero) & bottom (CTA) for legibility,
+     keeps the middle clearer so the product stays visible */
+  .video-overlay{
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(11,10,9,0.68) 0%,
+      rgba(11,10,9,0.12) 26%,
+      rgba(11,10,9,0.12) 68%,
+      rgba(11,10,9,0.74) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* ============================================================
+     LOADER — shown until the video is ready to scrub
+     ============================================================ */
+  .loader{
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: var(--obsidian);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .loader-content{ display:flex; flex-direction:column; align-items:center; gap:1.3rem; }
+  .loader-logo{ font-size:0.85rem; letter-spacing:0.4em; font-weight:500; color: var(--porcelain); }
+  .loader-bar{ width:140px; height:1px; background:rgba(244,239,230,0.15); overflow:hidden; position:relative; }
+  .loader-bar-fill{
+    position:absolute; top:0; left:-40%; width:40%; height:100%;
+    background: var(--gold);
+    animation: loaderSlide 1.2s ease-in-out infinite;
+  }
+  @keyframes loaderSlide{ 0%{ left:-40%; } 100%{ left:100%; } }
+
+  /* ============================================================
+     HEADER (minimal wordmark only — kept deliberately quiet)
+     ============================================================ */
+  .site-header{
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    padding: 2rem 6vw;
+    z-index: 20;
+  }
+  .logo{
+    font-size: 0.82rem;
+    letter-spacing: 0.35em;
+    font-weight: 500;
+    color: var(--porcelain);
+    text-shadow: 0 2px 14px rgba(0,0,0,0.5);
+  }
+
+  /* ============================================================
+     POUR GAUGE — signature scroll indicator: the line "fills"
+     like a cup as you move through the ritual. Desktop only.
+     ============================================================ */
+  .pour-gauge{
+    position: fixed;
+    right: 3.5vw;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+  }
+  .pour-gauge-track{
+    position: relative;
+    width: 1px;
+    height: 26vh;
+    background: rgba(244,239,230,0.15);
+  }
+  .pour-gauge-fill{
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to top, var(--gold), var(--gold-bright));
+    box-shadow: 0 0 12px rgba(200,164,92,0.55);
+  }
+  .pour-gauge-label{
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    color: var(--smoke);
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 900px){ .pour-gauge{ display:none; } }
+
+  /* ============================================================
+     CONTENT — scrolls on top of the fixed video
+     ============================================================ */
+  .content{ position: relative; z-index: 1; }
+
+  .panel{
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 6vw;
+    position: relative;
+  }
+
+  .hero{ align-items: center; text-align: center; }
+  .align-left{ align-items: flex-start; text-align: left; }
+  .align-right{ align-items: flex-end; text-align: right; }
+  .final{ align-items: center; text-align: center; }
+
+  .eyebrow{
+    display: block;
+    font-size: 0.78rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--gold);
+    margin-bottom: 1.4rem;
+  }
+
+  h1{
+    font-size: clamp(2.8rem, 9vw, 7rem);
+    font-weight: 200;
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    color: var(--porcelain);
+    margin-bottom: 1.6rem;
+  }
+
+  h2{
+    font-size: clamp(2.1rem, 5.6vw, 4rem);
+    font-weight: 200;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    color: var(--porcelain);
+    margin-bottom: 1.4rem;
+  }
+
+  .sub{
+    max-width: 520px;
+    margin: 0 auto;
+    font-size: clamp(1rem, 1.4vw, 1.2rem);
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--smoke);
+  }
+
+  .text-block{
+    max-width: 520px;
+    padding: 2.6rem 3rem;
+    background: linear-gradient(135deg, rgba(11,10,9,0.55), rgba(11,10,9,0.22));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-left: 1px solid rgba(200,164,92,0.35);
+  }
+  .align-right .text-block{ border-left:none; border-right:1px solid rgba(200,164,92,0.35); }
+
+  .text-block p{
+    font-size: clamp(1rem, 1.3vw, 1.12rem);
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--smoke);
+  }
+
+  .final p{
+    font-size: clamp(1rem, 1.3vw, 1.12rem);
+    font-weight: 300;
+    color: var(--smoke);
+    margin-bottom: 2.4rem;
+  }
+
+  .cta{
+    display: inline-block;
+    padding: 1.05rem 2.7rem;
+    border: 1px solid var(--gold);
+    border-radius: 999px;
+    color: var(--porcelain);
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: background .4s var(--ease), color .4s var(--ease), box-shadow .4s var(--ease);
+  }
+  .cta:hover{
+    background: var(--gold);
+    color: var(--obsidian);
+    box-shadow: 0 0 36px rgba(200,164,92,0.45);
+  }
+  .cta:focus-visible{
+    outline: 2px solid var(--gold-bright);
+    outline-offset: 4px;
+  }
+
+  /* Hero scroll cue */
+  .scroll-cue{
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--smoke);
+  }
+  .scroll-cue-line{
+    width: 1px;
+    height: 32px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse{
+    0%, 100%{ opacity: 0.25; transform: scaleY(0.6); }
+    50%{ opacity: 1; transform: scaleY(1); }
+  }
+
+  /* Default hidden state for animated elements (GSAP animates them in;
+     this prevents any flash of unstyled content before JS runs) */
+  .reveal{ opacity: 0; transform: translateY(40px); }
+  noscript .reveal,
+  html.no-js .reveal{ opacity: 1; transform: none; }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 768px){
+    .panel{ padding: 0 7vw; }
+    .align-left, .align-right{ align-items: center; text-align: center; }
+    .text-block{
+      max-width: 100%;
+      padding: 2rem 1.8rem;
+      border-left: none;
+      border-right: none;
+      border-top: 1px solid rgba(200,164,92,0.35);
+    }
+    .site-header{ padding: 1.5rem 6vw; }
+  }
+
+  /* ============================================================
+     REDUCED MOTION
+     ============================================================ */
+  @media (prefers-reduced-motion: reduce){
+    .scroll-cue-line{ animation: none; }
+    .loader-bar-fill{ animation: none; }
+  }
+
+</style>
+</head>
+<body>
+
+  <!-- ============================================================
+       FIXED BACKGROUND VIDEO
+       ============================================================ -->
+  <div class="video-wrapper">
+    <video id="bg-video" muted playsinline preload="auto">
+      <!-- PASTE YOUR VIDEO LINK HERE -->
+      <source src="coffee1.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+  </div>
+
+  <!-- Loader, shown until the video reports its duration -->
+  <div class="loader" id="loader">
+    <div class="loader-content">
+      <div class="loader-logo">AURUM</div>
+      <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Minimal fixed wordmark -->
+  <header class="site-header">
+    <span class="logo">AURUM</span>
+  </header>
+
+  <!-- Signature scroll gauge: fills like a cup as you scroll -->
+  <div class="pour-gauge" aria-hidden="true">
+    <div class="pour-gauge-track">
+      <div class="pour-gauge-fill" id="pourFill"></div>
+    </div>
+    <span class="pour-gauge-label" id="pourLabel">00%</span>
+  </div>
+
+  <!-- ============================================================
+       SCROLLING CONTENT
+       ============================================================ -->
+  <main class="content">
+
+    <!-- SECTION 1 — HERO -->
+    <section class="panel hero">
+      <span class="eyebrow reveal">AURUM — THE RITUAL MUG</span>
+      <h1 class="reveal">Awaken<br>Your Senses</h1>
+      <p class="sub reveal">Weight in the hand. Warmth on the skin. The quiet first breath of steam before the day begins.</p>
+      <div class="scroll-cue reveal">
+        <span class="scroll-cue-line"></span>
+        SCROLL
+      </div>
+    </section>
+
+    <!-- SECTION 2 — LEFT ALIGNED -->
+    <section class="panel align-left">
+      <div class="text-block">
+        <span class="eyebrow reveal">I — THE POUR</span>
+        <h2 class="reveal">Crafted for the<br>Perfect Pour</h2>
+        <p class="reveal">The rim is drawn thin and angled by hand, so the coffee finds your lips before it finds the air. Every Aurum mug is cast, glazed, and tested in small batches — never assembly, always craft.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 3 — RIGHT ALIGNED -->
+    <section class="panel align-right">
+      <div class="text-block">
+        <span class="eyebrow reveal">II — THE WARMTH</span>
+        <h2 class="reveal">Experience<br>the Warmth</h2>
+        <p class="reveal">Double-walled stoneware holds heat twice as long as ordinary ceramic, while the matte exterior stays cool to the touch — so your hands feel only comfort, never caution.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 4 — FINAL / CTA -->
+    <section class="panel final">
+      <span class="eyebrow reveal">III — THE RITUAL</span>
+      <h2 class="reveal">Choose Your<br>Ritual</h2>
+      <p class="reveal">Four glazes. One obsession with detail.</p>
+      <!-- Replace # with a link to your shop or collection page -->
+      <a href="#" class="cta reveal">Explore the Collection</a>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       GSAP + ScrollTrigger (CDN)
+       ============================================================ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const video       = document.getElementById('bg-video');
+    const loaderEl     = document.getElementById('loader');
+    const pourFill     = document.getElementById('pourFill');
+    const pourLabel    = document.getElementById('pourLabel');
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function updateGauge(progress){
+      pourFill.style.height  = (progress * 100) + '%';
+      pourLabel.textContent  = Math.round(progress * 100) + '%';
+    }
+
+    function hideLoader(){
+      gsap.to(loaderEl, {
+        opacity: 0,
+        duration: 0.7,
+        onComplete: () => { loaderEl.style.display = 'none'; }
+      });
+    }
+
+    function initTextReveals(){
+      gsap.utils.toArray('.panel').forEach((panel) => {
+        const els = panel.querySelectorAll('.reveal');
+        if (prefersReduced) {
+          gsap.set(els, { opacity: 1, y: 0 });
+          return;
+        }
+        gsap.fromTo(els,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: 'power2.out',
+            stagger: 0.12,
+            scrollTrigger: {
+              trigger: panel,
+              start: 'top 75%',
+              toggleActions: 'play none none reverse'
+            }
+          }
+        );
+      });
+    }
+
+    // This is the core "scroll-scrubbing" trick: GSAP tweens the video's
+    // currentTime property directly, and ScrollTrigger's scrub option ties
+    // that tween's playhead to scroll position — forward on scroll down,
+    // backward on scroll up, automatically.
+    function initVideoScrub(){
+      gsap.to(video, {
+        currentTime: video.duration,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.content',
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: prefersReduced ? true : 0.5, // raise this number (e.g. 1.5) for a lazier, more cinematic catch-up
+          onUpdate: (self) => updateGauge(self.progress)
+        }
+      });
+    }
+
+    // Fallback if the video link is missing/broken — the gauge & text
+    // animations still work, just without frame-accurate scrubbing.
+    function initGaugeFallback(){
+      ScrollTrigger.create({
+        trigger: '.content',
+        start: 'top top',
+        end: 'bottom bottom',
+        onUpdate: (self) => updateGauge(self.progress)
+      });
+    }
+
+    let started = false;
+    function start(){
+      if (started) return;
+      started = true;
+      hideLoader();
+      initTextReveals();
+
+      if (video.duration && isFinite(video.duration) && video.duration > 0) {
+        initVideoScrub();
+      } else {
+        initGaugeFallback();
+        // Video hasn't loaded yet — hook into it so scrub works once it arrives
+        video.addEventListener('loadedmetadata', function onMeta(){
+          video.removeEventListener('loadedmetadata', onMeta);
+          if (video.duration && isFinite(video.duration) && video.duration > 0) {
+            initVideoScrub();
+            ScrollTrigger.refresh();
+          }
+        });
+      }
+      ScrollTrigger.refresh();
+    }
+
+    // Always show loader for exactly 2.5s — same experience on first visit & cached
+    setTimeout(start, 2500);
+  </script>
+
+</body>
+</html>
